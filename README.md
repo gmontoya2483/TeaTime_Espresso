@@ -22,7 +22,15 @@ This is a exercise repository for the TeaTime example app which is part of Udaci
 **Note:** ```compile 'com.android.support:support-annotations:27.0.1'``` and ```androidTestCompile 'com.android.support:support-annotations:27.0.1'``` must have the same versions.
 
 
-## Creating a simple user Interface (UI) test
+
+## What can be tested with Espresso
+
+* Views
+* AdaptersViews
+* Intents
+* Idling Resources
+
+## Creating a simple user Interface (UI) test - (Views)
 
 1. Create a new class file within the *androidTest* folder (Instrumented test)
 
@@ -93,6 +101,80 @@ The *Test* at the end of the name shows others developers that the class is just
 
 5. Run the test
 
+## Test AdapterViews with Espresso
+
+Espresso does require a  method call when dealing with AdapterView widgets. Since *AdapterViews* such as *ListView* and *GridView* load data dynamically from an Adapter, only a subset of the contents may be loaded in the current view hierarchy at a time. This means that ```onView()``` may not be able to find the necessary view.
+
+To handle this we need to use ```onData()``` which loads the adapter item we are interested in onto the screen before operating on it.
+
+![Screenshot1](screenshots/adapter_view_on_data.png)
+
+To help us further specify the item in the AdapterView we’re interested in, we can use a DataOption method such as ```inAdapterView()``` or ```atPosition()```. These methods are highlighted in the cheat sheet below.
+
+![Screenshot1](screenshots/adapter_data_option.png)
+
+**Notice** that how we test Views in AdapterViews is very similar to how we test single Views - *matching, acting, and asserting*.
+
+![Screenshot1](screenshots/adapter_match_asset_acting.png)
+
+One test I’d like to run is clicking on a gridView tea item and checking that it opens up the corresponding tea OrderActivity.
+
+![Screenshot1](screenshots/adapter_expected_test.png)
+
+
+### Steps
+
+1. Create a new class file within the *androidTest* folder (Instrumented test)
+2. Start off this file with the ```@RunWith(AndroidJUnit4.class)```
+3. Add the ```ActivityTestRule``` in the body of the test
+
+    **NOTE** The ```ActivityTestRule``` provides functional test for a specific single Activity. In this case for the ```OrderActivity.class```
+
+4. Add the tests *@Test*
+
+
+```java
+   @RunWith(AndroidJUnit4.class)
+   public class MenuActivityScreenTest {
+
+       public static final String TEA_NAME = "Green Tea";
+
+
+       /**
+        * The ActivityTestRule is a rule provided by Android used for functional testing of a single
+        * activity. The activity that will be tested will be launched before each test that's annotated
+        * with @Test and before methods annotated with @Before. The activity will be terminated after
+        * the test and methods annotated with @After are complete. This rule allows you to directly
+        * access the activity during the test.
+        */
+
+       @Rule
+       public ActivityTestRule<MenuActivity> mMenuActivityTestRule
+               = new ActivityTestRule<>(MenuActivity.class);
+
+       @Test
+       public void clickGridViewItem_OpensOrderActivity() {
+
+           // gridview item and clicks it.
+           onData(anything()).inAdapterView(withId(R.id.tea_grid_view)).atPosition(1).perform(click());
+
+           // Checks that the OrderActivity opens with the correct tea name displayed
+           onView(withId(R.id.tea_name_text_view)).check(matches(withText(TEA_NAME)));
+
+       }
+
+   }
+```
+
+
+5. Run the test
+
+
+
+
+
+
+
 
 
 ## General steps of Espresso View Testing
@@ -105,4 +187,6 @@ The *Test* at the end of the name shows others developers that the class is just
 [Testing Apps on Android - Espresso](https://developer.android.com/training/testing/espresso/index.html)
 
 [Android Espresso cheat sheet](https://developer.android.com/training/testing/espresso/cheat-sheet.html)
+
+[DataIteration](https://developer.android.com/reference/android/support/test/espresso/DataInteraction.html)
 
