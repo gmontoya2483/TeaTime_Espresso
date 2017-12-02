@@ -170,6 +170,9 @@ One test I’d like to run is clicking on a gridView tea item and checking that 
 5. Run the test
 
 
+## Test intents Stubbing and Verification
+
+
 
 
 
