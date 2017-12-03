@@ -31,4 +31,8 @@ dependencies {
     androidTestCompile 'com.android.support.test.espresso:espresso-core:3.0.1'
     androidTestCompile 'com.android.support.test.espresso:espresso-intents:3.0.1'
 
+
+    //Add espresso idling resource gradle dependency
+    compile 'com.android.support.test.espresso:espresso-idling-resource:3.0.1'
+
 }
